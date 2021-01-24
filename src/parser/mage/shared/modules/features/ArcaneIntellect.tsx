@@ -8,7 +8,13 @@ import { Trans } from '@lingui/macro';
 
 class ArcaneIntellect extends Analyzer {
 	get uptime() {
-		return this.selectedCombatant.getBuffUptime(SPELLS.ARCANE_INTELLECT.id) / this.owner.fightDuration;
+	  if (!this.owner.hasDowntime) {
+      return this.selectedCombatant.getBuffUptime(SPELLS.ARCANE_INTELLECT.id) / this.owner.fightDuration;
+    }
+	  this.owner.adjustForDowntime = true;
+	  const aliveTime = this.owner.fightDuration;
+	  this.owner.adjustForDowntime = false;
+    return this.selectedCombatant.getBuffUptime(SPELLS.ARCANE_INTELLECT.id) / aliveTime;
 	}
 
 	get suggestionThresholds() {
